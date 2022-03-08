@@ -27,6 +27,19 @@ public class AhorcadoCliente {
                 System.out.println(mensaje);
                 Scanner sc = new Scanner(System.in);
 
+                String enviarUsuario = sc.next();
+                two.writeUTF(enviarUsuario);
+                mensaje = one.readUTF().toString();
+                System.out.println(mensaje);
+                String enviarOrdenador = sc.next();
+                two.writeUTF(enviarOrdenador);
+                mensaje = one.readUTF().toString();
+                System.out.println(mensaje);
+                String enviarSistema = sc.next();
+                two.writeUTF(enviarSistema);
+                mensaje = one.readUTF().toString();
+                System.out.println(mensaje);
+
                 while (!salir) {
                     mensaje = one.readUTF().toString();
                     System.out.println(mensaje);

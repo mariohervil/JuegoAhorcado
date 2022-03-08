@@ -17,12 +17,30 @@ public class AhorcadoHiloServer extends Thread {
     static String letrasDichas;
     static List<String> caracteresEspeciales;
     static boolean abandono = false;
-
+    DataOutputStream dos;
+    DataInputStream uno;
+    String user;
+    String ordenador;
+    String sistema;
     public AhorcadoHiloServer(Socket socket) {
         this.socket = socket;
     }
 
     public void run() {
+        try{
+            uno = new DataInputStream(socket.getInputStream());
+            dos = new DataOutputStream(socket.getOutputStream());
+            dos.writeUTF("Cuál es tu user?");
+            user = uno.readUTF();
+            dos.writeUTF("Cuál es el nombre de tu ordenador?");
+           ordenador = uno.readUTF();
+            dos.writeUTF("Cuál es tu sistema operativo?");
+            sistema = uno.readUTF();
+
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
         letrasDichas = "";
         // Cada vez que se inicia el hilo, recibe una conexi�n
         String letraIntento;
@@ -43,9 +61,9 @@ public class AhorcadoHiloServer extends Thread {
 
         boolean salir = false;
         try {
-            DataInputStream uno = new DataInputStream(socket.getInputStream());
-            DataOutputStream dos = new DataOutputStream(socket.getOutputStream());
-            dos.writeUTF("Bienvenido al juego del ahorcado, tu palabra tiene: " + palabra.length() + " letras.");
+
+            dos.writeUTF("Bienvenido al juego del ahorcado, " + user + ", tu palabra tiene: " + palabra.length() + " letras." +
+                    "\nTendrás que decir letras hasta que aciertes la palabra, tienes 8 VIDAS, si las agotas, pierdes.");
             while (vidas != 0 && guiones.contains("_") && !abandono) {
                 dos.writeUTF("Di una letra");
                 letraIntento = uno.readUTF();
@@ -57,7 +75,8 @@ public class AhorcadoHiloServer extends Thread {
                 // letraIntento.matches("[a-zA-Z*]");
                 if (!letraIntento.matches("[a-zA-Z*]") && !abandono) {
                     dos.writeUTF("Esa letra no está permitida");
-                } else if (palabra.contains(letraIntento) && !acertadas.contains(letraIntento.substring(0, 1)) && !dichas.contains((letraIntento.substring(0, 1))) && !abandono) {
+                } else if (palabra.contains(letraIntento) && !acertadas.contains(letraIntento.substring(0, 1)) && !dichas.contains((letraIntento.substring(0, 1)))
+                        && !abandono) {
                     addToFound(letraIntento.substring(0, 1));
                     addToDichas(letraIntento.substring(0, 1));
                     generateDashes();
