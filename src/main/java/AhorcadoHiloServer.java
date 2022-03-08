@@ -13,7 +13,7 @@ public class AhorcadoHiloServer extends Thread {
     static List<String> dichas;
     static List<String> letrasPalabra;
     static String guiones = "";
-    static int vidas = 6;
+    static int vidas = 8;
     static String letrasDichas;
     static List<String> caracteresEspeciales;
     static boolean abandono = false;
@@ -84,7 +84,10 @@ public class AhorcadoHiloServer extends Thread {
                 if (abandono) dos.writeUTF("Abandono");
             }
 abandono = false;
-
+vidas = 8;
+guiones = "";
+dichas.clear();
+acertadas.clear();
         } catch (IOException e) {
             // TODO Auto-generated catch block
             e.printStackTrace();
