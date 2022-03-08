@@ -30,12 +30,10 @@ public class AhorcadoHiloServer extends Thread {
         try{
             uno = new DataInputStream(socket.getInputStream());
             dos = new DataOutputStream(socket.getOutputStream());
-            dos.writeUTF("Cuál es tu user?");
+            String info = uno.readUTF();
+            System.out.println(info);
             user = uno.readUTF();
-            dos.writeUTF("Cuál es el nombre de tu ordenador?");
-           ordenador = uno.readUTF();
-            dos.writeUTF("Cuál es tu sistema operativo?");
-            sistema = uno.readUTF();
+            System.out.println(user + " se ha conectado");
 
         } catch (IOException e) {
             e.printStackTrace();

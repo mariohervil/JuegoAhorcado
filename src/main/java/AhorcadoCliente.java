@@ -1,6 +1,7 @@
 import java.io.DataInputStream;
 import java.io.DataOutputStream;
 import java.io.IOException;
+import java.net.InetAddress;
 import java.net.Socket;
 import java.util.Scanner;
 
@@ -17,28 +18,25 @@ public class AhorcadoCliente {
             System.out.println("###########################");
             System.out.println("CLIENTE DE AHORCADO");
             System.out.println("###########################");
+            InetAddress localHost = InetAddress.getLocalHost();
+            String host = localHost.getHostName();
+            String ip = localHost.getHostAddress();
+            String operativeSystem = System.getProperty("os.name");
+            String usuario = System.getProperty("user.name");
+            String equipo = System.getenv("COMPUTERNAME");
+
+
             try {
 
                 clientSocket = new Socket("PCSG-DAM-06", 5555); // Conexi�n al servidor
                 DataInputStream one = new DataInputStream(clientSocket.getInputStream());
                 DataOutputStream two = new DataOutputStream(clientSocket.getOutputStream());
+                two.writeUTF("Host: "+host+ ", Ip: "+ip+", SO: "+operativeSystem+", Usuario: "+usuario+", Equipo: "+equipo);
+                two.writeUTF(usuario);
                 System.out.println("Conectado al servidor...");
                 mensaje = one.readUTF().toString();
                 System.out.println(mensaje);
                 Scanner sc = new Scanner(System.in);
-
-                String enviarUsuario = sc.next();
-                two.writeUTF(enviarUsuario);
-                mensaje = one.readUTF().toString();
-                System.out.println(mensaje);
-                String enviarOrdenador = sc.next();
-                two.writeUTF(enviarOrdenador);
-                mensaje = one.readUTF().toString();
-                System.out.println(mensaje);
-                String enviarSistema = sc.next();
-                two.writeUTF(enviarSistema);
-                mensaje = one.readUTF().toString();
-                System.out.println(mensaje);
 
                 while (!salir) {
                     mensaje = one.readUTF().toString();
