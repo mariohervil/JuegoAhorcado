@@ -37,7 +37,7 @@ public class AhorcadoCliente {
                     System.out.println(mensaje);
                     mensaje = one.readUTF().toString();
                     System.out.println(mensaje);
-                    if (mensaje.equals("Has ganado") || mensaje.equals("Has perdido") ) {salir = true;};
+                    if (mensaje.equals("Has ganado") || mensaje.equals("Has perdido") || mensaje.equals("Abandono")) {salir = true;}
                 }
                 //mensaje = one.readUTF().toString();
                 //System.out.println(mensaje);

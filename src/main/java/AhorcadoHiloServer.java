@@ -15,6 +15,9 @@ public class AhorcadoHiloServer extends Thread {
     static String guiones = "";
     static int vidas = 6;
     static String letrasDichas;
+    static List<String> caracteresEspeciales;
+    static boolean abandono = false;
+
     public AhorcadoHiloServer(Socket socket) {
         this.socket = socket;
     }
@@ -43,20 +46,28 @@ public class AhorcadoHiloServer extends Thread {
             DataInputStream uno = new DataInputStream(socket.getInputStream());
             DataOutputStream dos = new DataOutputStream(socket.getOutputStream());
             dos.writeUTF("Bienvenido al juego del ahorcado, tu palabra tiene: " + palabra.length() + " letras.");
-            while (vidas != 0 && guiones.contains("_")) {
+            while (vidas != 0 && guiones.contains("_") && !abandono) {
                 dos.writeUTF("Di una letra");
                 letraIntento = uno.readUTF();
-                if (palabra.contains(letraIntento) && !acertadas.contains(letraIntento.substring(0, 1)) && !dichas.contains((letraIntento.substring(0, 1)))) {
+                if (letraIntento.substring(0, 1).equals("*")) {
+                    abandono = true;
+                }
+
+
+                // letraIntento.matches("[a-zA-Z*]");
+                if (!letraIntento.matches("[a-zA-Z*]") && !abandono) {
+                    dos.writeUTF("Esa letra no está permitida");
+                } else if (palabra.contains(letraIntento) && !acertadas.contains(letraIntento.substring(0, 1)) && !dichas.contains((letraIntento.substring(0, 1))) && !abandono) {
                     addToFound(letraIntento.substring(0, 1));
                     addToDichas(letraIntento.substring(0, 1));
                     generateDashes();
                     dos.writeUTF("Has acertado la letra, " + letraIntento + " está en tu palabra!\n\n" + guiones);
-                } else if (palabra.contains(letraIntento) && acertadas.contains(letraIntento.substring(0, 1))) {
-                    dos.writeUTF("Ya has dicho la letra " + letraIntento + "!\n\n\" + guiones");
+                } else if (palabra.contains(letraIntento) && acertadas.contains(letraIntento.substring(0, 1)) && !abandono) {
+                    dos.writeUTF("Ya has dicho la letra " + letraIntento + "!\n\n" + guiones);
                     addToDichas(letraIntento.substring(0, 1));
                     vidas--;
-                } else if (!palabra.contains(letraIntento)) {
-                    dos.writeUTF("Has fallado\n\n\" + guiones");
+                } else if (!palabra.contains(letraIntento) && !abandono) {
+                    dos.writeUTF("Has fallado\n\n" + guiones);
                     addToDichas(letraIntento.substring(0, 1));
                     vidas--;
                 }
@@ -67,11 +78,12 @@ public class AhorcadoHiloServer extends Thread {
                     dos.writeUTF("Has ganado");
                 }
 
+
                 generarListaDichas();
                 dos.writeUTF("\nLetras dichas: " + letrasDichas + " \nVIDAS: " + vidas);
+                if (abandono) dos.writeUTF("Abandono");
             }
-
-
+abandono = false;
 
         } catch (IOException e) {
             // TODO Auto-generated catch block
